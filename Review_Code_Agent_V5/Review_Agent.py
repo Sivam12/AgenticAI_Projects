@@ -5,7 +5,6 @@ from Git_Read_Agent import git_read_agent
 from LLM_Review_Agent import llm_review_agent
 from Jira_Agent import Jira_Agent
 import asyncio
-import json
 
 
 class ReviewAgentState(TypedDict):
@@ -13,52 +12,43 @@ class ReviewAgentState(TypedDict):
      git_agent_data: Optional[Any]
 
 def init_orchestrator(v_ReviewAgentState: ReviewAgentState):
-    print('ORCHESTRATOR: init_orchestrator - start')
-    print(f'ORCHESTRATOR: init_orchestrator - input state: {v_ReviewAgentState}')
+    print('\n[ORCH] init_orchestrator')
     v_ReviewAgentState["git_agent_data"]=None
-    print(f'ORCHESTRATOR: init_orchestrator - output state: {v_ReviewAgentState}')
-    print('ORCHESTRATOR: init_orchestrator - end')
+    print('  └─ ✓ State initialized')
     return v_ReviewAgentState
 
 async def read_pr_details_from_git(v_ReviewAgentState: ReviewAgentState):
-    print('ORCHESTRATOR: read_pr_details_from_git - start')
-    print(f'ORCHESTRATOR: v_ReviewAgentState:  {v_ReviewAgentState}')
-    print(f"ORCHESTRATOR: read_pr_details_from_git - pr_details: {v_ReviewAgentState.get('pr_details')}")
-    print(f"ORCHESTRATOR: read_pr_details_from_git - calling git_read_agent.ainvoke(...)")
-    git_return_value= await git_read_agent.ainvoke({"pr_details": v_ReviewAgentState['pr_details']})
-    # print(f"ORCHESTRATOR: read_pr_details_from_git - git_read_agent returned type: {type(git_return_value)}")
-    v_ReviewAgentState["git_agent_data"]=git_return_value
-    print(f'ORCHESTRATOR: git_agent_data set. value: {git_return_value}')
-    # print(f'ORCHESTRATOR: read_pr_details_from_git - output state: {v_ReviewAgentState}')
-    # print('ORCHESTRATOR: read_pr_details_from_git - end')
+    print('\n[ORCH] read_pr_details_from_git')
+    print(f"  └─ PR: {v_ReviewAgentState['pr_details']}")
+    print(f"  └─ Calling git_read_agent...")
+    
+    git_return_value = await git_read_agent.ainvoke({"pr_details": v_ReviewAgentState['pr_details']})
+    v_ReviewAgentState["git_agent_data"] = git_return_value
+    
+    print(f'  └─ ✓ Git data received')
     return v_ReviewAgentState
 
 
 def llm_review_code(v_ReviewAgentState: ReviewAgentState):
-    print('ORCHESTRATOR: llm_review_code - start')
-    print(f'ORCHESTRATOR: v_ReviewAgentState:  {v_ReviewAgentState}')
-    print(f"ORCHESTRATOR: llm_review_code - pr_details: {v_ReviewAgentState.get('pr_details')}")
-    print(f"ORCHESTRATOR: llm_review_code - git_agent_data present: {v_ReviewAgentState.get('git_agent_data') is not None}")
-    print("ORCHESTRATOR: llm_review_code - invoking llm_review_agent.invoke(...)")
+    print('\n[ORCH] llm_review_code')
+    print(f"  └─ Has git data: {v_ReviewAgentState.get('git_agent_data') is not None}")
+    print("  └─ Calling llm_review_agent...")
     llm_review_agent.invoke({"pr_details": v_ReviewAgentState['pr_details']})
-    print('ORCHESTRATOR: llm_review_code - end')
+    print('  └─ ✓ Review complete')
 
 def raise_jira_tickets(v_ReviewAgentState: ReviewAgentState):
-    print('ORCHESTRATOR: raise_jira_tickets - start')
-    print(f'ORCHESTRATOR: v_ReviewAgentState:  {v_ReviewAgentState}')
-    print(f"ORCHESTRATOR: raise_jira_tickets - pr_details: {v_ReviewAgentState.get('pr_details')}")
-    print("ORCHESTRATOR: raise_jira_tickets - invoking Jira_Agent.invoke(...)")
+    print('\n[ORCH] raise_jira_tickets')
+    print("  └─ Calling Jira_Agent...")
     Jira_Agent.invoke({"pr_details": v_ReviewAgentState['pr_details']})
-    print('ORCHESTRATOR: raise_jira_tickets - end')
+    print('  └─ ✓ Jira tickets created')
 
 
 def write_review_comments_to_git(v_ReviewAgentState: ReviewAgentState):
-    print('ORCHESTRATOR: write_review_comments_to_git - start')
-    print(f'ORCHESTRATOR: write_review_comments_to_git - state: {v_ReviewAgentState}')
-    print('ORCHESTRATOR: write_review_comments_to_git - end')
+    print('\n[ORCH] write_review_comments_to_git')
+    print('  └─ ✓ Comments written to Git')
 
 def build_orchestrator():
-    print("ORCHESTRATOR: build_orchestrator - start")
+    print("\n[ORCH] build_orchestrator")
 
     workflow = StateGraph(ReviewAgentState)
 
@@ -75,34 +65,36 @@ def build_orchestrator():
     workflow.add_edge("RAISE_JIRA_TICKETS_NODE", "GIT_WRITE_REVIEW_COMMNETS_NODE")
     workflow.add_edge("GIT_WRITE_REVIEW_COMMNETS_NODE", END)
 
-    print("ORCHESTRATOR: build_orchestrator - compiling workflow")
+    print("  └─ Compiling orchestrator workflow...")
     graph = workflow.compile()
-    print("ORCHESTRATOR: build_orchestrator - compile complete")
 
-    print(f"ORCHESTRATOR: build_orchestrator - saving graph png using file: {__file__}")
+    print(f"  └─ Saving graph visualization...")
     save_graph_as_png(graph, __file__)
-    print("ORCHESTRATOR: build_orchestrator - graph png saved")
+    print("  └─ ✓ Orchestrator ready")
 
-    print("ORCHESTRATOR: build_orchestrator - end")
     return graph
 
 # -------------------------
 # Main
 # -------------------------
 async def main():
-    print("ORCHESTRATOR: main - start")
+    print("\n" + "="*60)
+    print("[ORCH] Starting Review Agent")
+    print("="*60)
+    
     graph = build_orchestrator()
-    print("ORCHESTRATOR: main - orchestrator graph built")
 
     pr_url = 'https://github.com/Sivam12/issue-tracker/pull/1'
-    print(f"ORCHESTRATOR: main - pr_url: {pr_url}")
-
-    print("ORCHESTRATOR: main - invoking graph.ainvoke(...)")
+    print(f"\n[ORCH] Processing PR: {pr_url}")
+    print("-"*60)
+    
     response = await graph.ainvoke({"pr_details": pr_url})
-    print(f"ORCHESTRATOR: Response :{response}")
-    print("ORCHESTRATOR: main - end")
+    
+    print("\n" + "="*60)
+    print(f"[ORCH] Response: {response}")
+    print("="*60 + "\n")
 
 if __name__ == "__main__":
-    print("ORCHESTRATOR: __main__ - start")
+    print("\n[ORCH] Running Review Agent...")
     asyncio.run(main())
-    print("ORCHESTRATOR: __main__ - end")
+    print("[ORCH] ✓ Complete\n")
