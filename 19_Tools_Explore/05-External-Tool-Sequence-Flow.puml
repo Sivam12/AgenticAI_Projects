@@ -1,0 +1,45 @@
+@startuml
+skinparam wrapWidth 300
+skinparam maxMessageSize 300
+skinparam ArrowThickness 2
+skinparam DefaultFontStyle bold
+skinparam DefaultFontName Arial
+skinparam DefaultFontSize 24
+
+actor USER
+
+participant "Agent / Orchestrator" as AGENT
+
+participant "LLM" as LLM
+
+participant "REST APIs \n(Function Tools)" as APIS
+
+participant "Amazon\n/Flipkart\n/SapnaOnline" as SERVERS
+
+== Tool Catalog Gathering ==
+AGENT -> APIS : Fetch Tool Catalog
+AGENT <- APIS : Return Catalog\n(product_info, store_location, place_order)
+
+== User Interaction ==
+USER -> AGENT : Prompt\n("Do you have 'Let Us C'?")
+
+== Agent Prompt Processing ==
+AGENT -> LLM : Forward Prompt +Tool Catalog
+LLM -> LLM : Parse & Analyze\nDetermine relevant tool(s)
+
+== Tool Invocation ==
+AGENT <- LLM : Request: Execute Tool\nproduct_info("Let Us C")
+AGENT -> APIS : Invoke \nproduct_info("Let Us C")
+APIS -> SERVERS: Get api_get_product_info("Let Us C")
+APIS <- SERVERS: Result(availability, metadata)
+AGENT <- APIS : Tool Result (availability, metadata)
+AGENT -> LLM : Forward the Results
+
+== LLM Response Composition ==
+LLM -> LLM : Generate Summary
+AGENT <- LLM : Return Product Summary
+
+== Final Response ==
+AGENT -> USER : Reply with final answer
+
+@enduml

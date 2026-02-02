@@ -1,0 +1,17 @@
+ORCHESTRATOR_INIT
+init_orchestrator
+
+GIT_READ_NODE
+read_pr_details_from_git
+
+LLM_AGENT_NODE
+llm_review_code
+
+RAISE_JIRA_TICKETS_NODE
+raise_jira_tickets
+
+GIT_WRITE_REVIEW_COMMNETS_NODE
+write_review_comments_to_git
+
+workflow = StateGraph(GitAgentState)
+

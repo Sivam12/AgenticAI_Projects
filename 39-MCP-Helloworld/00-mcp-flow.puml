@@ -1,0 +1,82 @@
+
+@startuml
+skinparam wrapWidth 300
+skinparam maxMessageSize 300
+skinparam ArrowThickness 2
+skinparam DefaultFontStyle bold
+skinparam DefaultFontName Arial
+skinparam DefaultFontSize 24
+
+actor User
+
+'== Context Blocks ==
+box "Host + Client Context" #ADD8E6
+participant "Host Application" as Host
+participant "MCP Client\n<<Orchestrator>>" as Client
+end box
+
+box "LLM Service" #FFFFCC
+participant "LLM" as LLM
+end box
+
+box "MCP Server + Tools\n<<Runtime>>" #90EE90
+participant "MCP Server" as Server
+participant "Ordering Agent\n(Function Tools)" as Tools
+end box
+
+box "Vendor Services" #FFFCCC
+participant "Vendor APIs\n(Amazon\n/Flipkart\n/SapnaOnline)" as Vendors
+end box
+
+== User Interaction ==
+User -> Host : Submit prompt
+
+== Host Context ==
+note right of Host
+- Manages session & user context
+- Passes prompt to MCP Client
+end note
+Host -> Client : Prompt + Context
+
+== Client Bootstraps Tooling ==
+Client -> Server : Connect & negotiate protocol
+Server --> Client : Confirm capabilities
+
+Client -> Server : Discover function tools
+note left of Server
+Returns avalable tools (e.g., get_id, get_price, get_stock, get_discount)
+end note
+Server --> Client : Return tool catalog
+
+note right of Client
+Registers available tools with LLM
+end note
+Client -> LLM : Register tools
+
+== Agent Prompt Processing ==
+Client -> LLM : Share prompt + tool list
+LLM -> LLM : Analyze prompt,\nDetermine tool usage
+
+== Tool Invocation Orchestration ==
+LLM -> Client : Request tool execution\n(e.g., get_price, get_stock)
+Client -> Server : Invoke tool functions with parameters
+
+== Function Execution Context ==
+box "Tool Execution Context @ MCP Server"
+    Server -> Tools : Call tool method\n(e.g., fk_get_price(name))
+    Tools -> Vendors : Query external API
+    Vendors --> Tools : Price/Stock/Discount
+    Tools --> Server : Return results
+end box
+
+Server --> Client : Return standardized results
+Client -> LLM : Provide tool outputs
+
+== Final Decision ==
+LLM -> LLM : Select best vendor\nbased on logic
+LLM -> Host : Final response
+Host -> User : Show response
+
+@enduml
+
+

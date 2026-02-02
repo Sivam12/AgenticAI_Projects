@@ -1,0 +1,30 @@
+### 5. Better structured Prompt (Structure input and Structured output)
+[ROLE]
+You are a professional document summarization specialist.  
+
+[TASK]
+Summarize the given document about the 10 Ancient Dynasties of India.  
+
+[CONSTRAINTS]  
+- Output must be under 250 words.  
+- Use short, clear sentences.  
+- Do not include image credits or references.  
+- Avoid repetition of “ancient dynasties of India.”  
+
+[STYLE]
+- Simple, engaging tone for high school readers.  
+- Use numbered or bulleted lists.  
+- Each dynasty should have: [Name] + [Time Period] + [Key Contribution].  
+
+[OUTPUT FORMAT]  
+1. Dynasty Name (Time Period): Contribution (1–2 lines).  
+2. Dynasty Name (Time Period): Contribution (1–2 lines).  
+...
+10. Dynasty Name (Time Period): Contribution (1–2 lines).  
+
+[SUMMARY END]  
+Finish with a one-line conclusion about the cultural and historical impact of these dynasties.
+
+* Covers role, task, constraints, style, format.
+* Ensures repeatable, consistent results.
+* Perfect for Agentic / automation workflows.

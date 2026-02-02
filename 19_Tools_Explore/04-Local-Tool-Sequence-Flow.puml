@@ -1,0 +1,46 @@
+@startuml
+skinparam wrapWidth 300
+skinparam maxMessageSize 300
+skinparam ArrowThickness 2
+skinparam DefaultFontStyle bold
+skinparam DefaultFontName Arial
+skinparam DefaultFontSize 24
+
+box "USER" #50F0EB
+actor USER
+end box
+
+box "Host Context" #ADD8E6
+participant "Agent / Orchestrator" as AGENT
+participant "Function Tools" as FUNCTIONS
+end box
+
+box "LLM Service" #FFFFCC
+participant "LLM" as LLM
+end box
+
+== Tool Catalog Gathering ==
+AGENT -> FUNCTIONS : Fetch Tool Catalog
+AGENT <- FUNCTIONS : Return Catalog\n(product_info, store_location, place_order)
+
+== User Interaction ==
+USER -> AGENT : Prompt\n("Do you have 'Let Us C'?")
+
+== Agent Prompt Processing ==
+AGENT -> LLM : Forward Prompt +Tool Catalog
+LLM -> LLM : Parse & Analyze\nDetermine relevant tool(s)
+
+== Tool Invocation ==
+LLM -> AGENT : Request: Execute Tool\nproduct_info("Let Us C")
+AGENT -> FUNCTIONS : Invoke \nproduct_info("Let Us C")
+AGENT <- FUNCTIONS : Tool Result (availability, metadata)
+AGENT -> LLM : Forward the Results
+
+== LLM Response Composition ==
+LLM -> LLM : Generate Summary
+AGENT <- LLM : Return Product Summary
+
+== Final Response ==
+AGENT -> USER : Reply with final answer
+
+@enduml

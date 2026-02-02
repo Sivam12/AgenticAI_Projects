@@ -1,0 +1,193 @@
+Client connected: True
+Available tools:
+{
+    "name": "GET_ISSUE",
+    "description": "\n    Get details of a specific Jira issue.\n    \n    Args:\n        issue_key: The Jira issue key (e.g., PROJ-123)\n    ",
+    "inputSchema": {
+        "properties": {
+            "issue_key": {
+                "title": "Issue Key",
+                "type": "string"
+            }
+        },
+        "required": [
+            "issue_key"
+        ],
+        "title": "GET_ISSUEArguments",
+        "type": "object"
+    },
+    "annotations": null
+}
+{
+    "name": "SEARCH_ISSUES",
+    "description": "\n    Search for Jira issues using JQL (Jira Query Language).\n    \n    Args:\n        jql: JQL query string (e.g., \"project = PROJ AND status = Open\")\n        max_results: Maximum number of results to return (default: 10)\n    ",
+    "inputSchema": {
+        "properties": {
+            "jql": {
+                "title": "Jql",
+                "type": "string"
+            },
+            "max_results": {
+                "default": 10,
+                "title": "Max Results",
+                "type": "integer"
+            }
+        },
+        "required": [
+            "jql"
+        ],
+        "title": "SEARCH_ISSUESArguments",
+        "type": "object"
+    },
+    "annotations": null
+}
+{
+    "name": "CREATE_ISSUE",
+    "description": "\n    Create a new Jira issue.\n    \n    Args:\n        project_key: The project key (e.g., PROJ)\n        summary: Issue summary/title\n        description: Detailed description\n        issue_type: Type of issue (default: Task)\n        priority: Priority level (default: Medium)\n    ",
+    "inputSchema": {
+        "properties": {
+            "project_key": {
+                "title": "Project Key",
+                "type": "string"
+            },
+            "summary": {
+                "title": "Summary",
+                "type": "string"
+            },
+            "description": {
+                "title": "Description",
+                "type": "string"
+            },
+            "issue_type": {
+                "default": "Task",
+                "title": "Issue Type",
+                "type": "string"
+            },
+            "priority": {
+                "default": "Medium",
+                "title": "Priority",
+                "type": "string"
+            }
+        },
+        "required": [
+            "project_key",
+            "summary",
+            "description"
+        ],
+        "title": "CREATE_ISSUEArguments",
+        "type": "object"
+    },
+    "annotations": null
+}
+{
+    "name": "UPDATE_ISSUE",
+    "description": "\n    Update an existing Jira issue.\n    \n    Args:\n        issue_key: The Jira issue key (e.g., PROJ-123)\n        summary: New summary (optional)\n        description: New description (optional)\n        priority: New priority (optional)\n        assignee: Username or email of assignee (optional)\n    ",
+    "inputSchema": {
+        "properties": {
+            "issue_key": {
+                "title": "Issue Key",
+                "type": "string"
+            },
+            "summary": {
+                "anyOf": [
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ],
+                "default": null,
+                "title": "Summary"
+            },
+            "description": {
+                "anyOf": [
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ],
+                "default": null,
+                "title": "Description"
+            },
+            "priority": {
+                "anyOf": [
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ],
+                "default": null,
+                "title": "Priority"
+            },
+            "assignee": {
+                "anyOf": [
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ],
+                "default": null,
+                "title": "Assignee"
+            }
+        },
+        "required": [
+            "issue_key"
+        ],
+        "title": "UPDATE_ISSUEArguments",
+        "type": "object"
+    },
+    "annotations": null
+}
+{
+    "name": "ADD_COMMENT",
+    "description": "\n    Add a comment to a Jira issue.\n    \n    Args:\n        issue_key: The Jira issue key (e.g., PROJ-123)\n        comment: Comment text\n    ",
+    "inputSchema": {
+        "properties": {
+            "issue_key": {
+                "title": "Issue Key",
+                "type": "string"
+            },
+            "comment": {
+                "title": "Comment",
+                "type": "string"
+            }
+        },
+        "required": [
+            "issue_key",
+            "comment"
+        ],
+        "title": "ADD_COMMENTArguments",
+        "type": "object"
+    },
+    "annotations": null
+}
+{
+    "name": "TRANSITION_ISSUE",
+    "description": "\n    Change the status of a Jira issue.\n    \n    Args:\n        issue_key: The Jira issue key (e.g., PROJ-123)\n        transition_name: Name of the transition (e.g., \"In Progress\", \"Done\")\n    ",
+    "inputSchema": {
+        "properties": {
+            "issue_key": {
+                "title": "Issue Key",
+                "type": "string"
+            },
+            "transition_name": {
+                "title": "Transition Name",
+                "type": "string"
+            }
+        },
+        "required": [
+            "issue_key",
+            "transition_name"
+        ],
+        "title": "TRANSITION_ISSUEArguments",
+        "type": "object"
+    },
+    "annotations": null
+}

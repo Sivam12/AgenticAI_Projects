@@ -1,0 +1,12 @@
+### 4. Structured Input Instructions
+You are a professional document summarization specialist.  
+Summarize the document about the 10 Ancient Dynasties of India.  
+Follow these rules:
+- Write the summary in 5–7 bullet points.  
+- Highlight the major dynasties and their contributions.  
+- Keep the explanation simple, avoiding complex historical jargon.  
+- Limit summary to 200 words.  
+
+* Adds constraints and some-what structured output 
+* Easier to evaluate quality.
+

@@ -1,0 +1,42 @@
+@startuml
+actor User
+
+' Agent subsystem in light blue with transparency
+box "Agent - Distribute Bonus" #LightBlue
+  participant Agent as "Agent"
+  participant Func1 as "F1: collect_fin_data"
+  participant Func2 as "F2: collect_emp_details"
+end box
+
+' Cloud box in light green with transparency
+box "Cloud" #LightGreen
+  participant LLM as "LLM"
+end box
+
+== Tool Registration ==
+Agent -> LLM : Register functions\n- collect_financial_data\n- collect_employee_details
+
+== User Prompt ==
+User -> Agent : Prompt:\n "Distribute 50%\n of profits based on\n ratings"
+Agent -> LLM : Share user prompt
+
+== LLM Reasoning ==
+LLM -> Agent : Request execution of\ncollect_financial_data
+
+== Tool Invocation 1 ==
+Agent -> Func1 : collect_financial_data()
+Func1 --> Agent : Return financial data
+Agent -> LLM : Return financial data
+
+LLM -> Agent : Request execution of\ncollect_employee_details
+
+== Tool Invocation 2 ==
+Agent -> Func2 : collect_employee_details()
+Func2 --> Agent : Return employee data
+Agent -> LLM : Return employee data
+
+== Final Reasoning ==
+LLM --> Agent : Compute and return\nbonus distribution
+
+Agent --> User : Final response:\nBonus breakdown\nper employee
+@enduml

@@ -1,0 +1,26 @@
+@startuml
+actor User
+
+' Application is the main system here
+box "Application" #LightBlue
+  participant App as "App"
+  participant Func1 as "F1: collect_fin_data"
+  participant Func2 as "F2: collect_emp_details"
+end box
+
+== User Request ==
+User -> App : Request:\n"Distribute 50% of\nprofits based on ratings"
+
+== Internal Data Collection ==
+App -> Func1 : collect_financial_data()
+Func1 --> App : Return financial data
+
+App -> Func2 : collect_employee_details()
+Func2 --> App : Return employee data
+
+== Processing ==
+App -> App : Compute bonus\ndistribution
+
+== Final Response ==
+App --> User : Final response:\nBonus breakdown\nper employee
+@enduml

@@ -1,0 +1,20 @@
+
+@startuml
+title Sample Sequence Flow Diagram
+
+actor User
+participant "Client App" as Client
+participant "API Gateway" as API
+participant "Business Service" as Service
+database DB
+
+User -> Client: Perform action
+Client -> API: HTTP Request
+API -> Service: Validate & forward request
+Service -> DB: Query / Update data
+DB --> Service: Result
+Service --> API: Business response
+API --> Client: HTTP Response
+Client --> User: Show result
+
+@enduml

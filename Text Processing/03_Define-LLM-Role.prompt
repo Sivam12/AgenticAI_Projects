@@ -1,0 +1,8 @@
+### 3. Role-Based Prompt
+You are a professional document summarization specialist. 
+Summarize the document about the 10 Ancient Dynasties of India 
+for a high school history student.
+
+* Explicitely defining the LLM Role with expected output
+* Still free-form output, no structure.
+
